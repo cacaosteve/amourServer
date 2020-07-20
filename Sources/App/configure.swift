@@ -13,8 +13,18 @@ public func configure(_ app: Application) throws {
         password: Environment.get("DATABASE_PASSWORD") ?? "52c4b6787be2c2090fb4efe37883f944edd3c145f6823521a0aa82247237eb18",
         database: Environment.get("DATABASE_NAME") ?? "d3gca1p92qcsv4"
     ), as: .psql)
+    
+    #if DEBUG
+    app.databases.use(.postgres(
+        hostname: Environment.get("DATABASE_HOST") ?? "localhost",
+        username: Environment.get("DATABASE_USERNAME") ?? "postgres",
+        password: Environment.get("DATABASE_PASSWORD") ?? "password",
+        database: Environment.get("DATABASE_NAME") ?? "amour"
+    ), as: .psql)
+    #endif
 
-    app.migrations.add(CreateTodo())
+    app.migrations.add(CreateUsers())
+    app.migrations.add(CreateTokens())
     try app.autoMigrate().wait()
 
     // register routes
